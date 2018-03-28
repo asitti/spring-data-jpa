@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
 /**
  * The interface encapsulates the setting of query parameters which might use a significant number of variations of
@@ -133,7 +134,8 @@ interface QueryParameterSetter {
 			// parameters in the query.
 			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=521915
 
-			return query.getParameters().size() == 0 && query.getClass().getName().startsWith("org.eclipse");
+			return query.getParameters().size() == 0
+					&& ClassUtils.getUserClass(query.getClass()).getName().startsWith("org.eclipse");
 		}
 	}
 
