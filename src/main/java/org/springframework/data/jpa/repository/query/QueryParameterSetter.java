@@ -17,6 +17,7 @@ package org.springframework.data.jpa.repository.query;
 
 import static org.springframework.data.jpa.repository.query.QueryParameterSetter.ErrorHandling.*;
 
+import java.lang.reflect.Proxy;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -134,8 +135,16 @@ interface QueryParameterSetter {
 			// parameters in the query.
 			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=521915
 
-			return query.getParameters().size() == 0
-					&& ClassUtils.getUserClass(query.getClass()).getName().startsWith("org.eclipse");
+			return query.getParameters().size() == 0 && unwrapClass(query).getName().startsWith("org.eclipse");
+		}
+
+		private Class<?> unwrapClass(Query query) {
+
+			if (query instanceof Proxy) {
+				query = query.unwrap(null);
+			}
+
+			return ClassUtils.getUserClass(query.getClass());
 		}
 	}
 
